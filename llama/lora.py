@@ -5,16 +5,34 @@ import math
 import numpy as np
 from sentencepiece import SentencePieceProcessor
 import time
+import json
+import random
 
 import mlx.core as mx
 import mlx.nn as nn
 import mlx.optimizers as optim
 from mlx.utils import tree_flatten
 
-
 from llama import LoRALinear, load_model
-import wikisql
 
+data_path = "data.jsonl"
+
+# Function to load data from a jsonl file
+def load_data_from_jsonl(file_path):
+    with open(file_path, 'r') as file:
+        data = [json.loads(line) for line in file]
+    return data
+
+# Function to split data into train, validation, and test sets
+def split_data(data, train_ratio, val_ratio, test_ratio):
+    random.shuffle(data)
+    total = len(data)
+    train_end = int(total * train_ratio)
+    val_end = train_end + int(total * val_ratio)
+    train_data = data[:train_end]
+    val_data = data[train_end:val_end]
+    test_data = data[val_end:]
+    return train_data, val_data, test_data
 
 def build_parser():
     parser = argparse.ArgumentParser(description="Llama LoRA finetuning")
@@ -255,7 +273,9 @@ if __name__ == "__main__":
     print(f"Trainable parameters {p:.3f}M")
 
     print("Loading datasets")
-    train_set, valid_set, test_set = wikisql.load()
+    data = load_data_from_jsonl(data_path)
+    train_set, valid_set, test_set = split_data(data, 0.70, 0.15, 0.15)
+
 
     if args.train:
         print("Training")
