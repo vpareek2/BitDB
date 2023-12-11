@@ -8,15 +8,21 @@ def generate_random_data(num_rows, file_name):
     with open(file_name, 'w') as file:
         for _ in range(num_rows):
             name = random.choice(first_names)
-            id = f"{random.randint(100, 999):02d}"
+            id = random.randint(100, 999)
             email_domain = random.choice(email_domains)
             email = f"{name.lower()}{id}{email_domain}"
 
-            question = f"Insert {name} with id {id} with the email {email}"
-            answer = f"insert {name} {id} {email}"
+            user_question = f"Insert {name} with id {id} with the email {email}"
+            assistant_answer = f"insert {name} {id} {email}"
 
-            data = {"question": question, "answer": answer}
+            data = {
+                "messages": [
+                    {"role": "system", "content": "You are a database query chatbot meant to go from natural language to queries."},
+                    {"role": "user", "content": user_question},
+                    {"role": "assistant", "content": assistant_answer}
+                ]
+            }
             json_line = json.dumps(data)
             file.write(json_line + '\n')
 
-generate_random_data(400, 'data.jsonl')
+generate_random_data(60, 'data.jsonl')
