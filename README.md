@@ -15,20 +15,14 @@ BitDB is a very lightweight skeleton database. Stemming from my interest in lear
 
 ### Dependencies
 
-* `pip install git+https://github.com/deepmind/dm-haiku`
-* `pip install plotnine`
-* `pip install pybraille`
-* `pip install gradio`
 
 
-### Executing program
 
-* First navigate to the model folder to set up some pre-requisites for the db to work.
-  
-```
-python run.py
-```
+### Getting Started
 
+
+
+### How to use
 
 ## Authors
 
@@ -47,8 +41,5 @@ ex. Veer Pareek - vpareek2@illinois.edu
 - [ ] Implement Grade 2 Braille translation
 - [ ] Write a script to auto 3D Print
 
-
-## Note about architecture
-You might be confused as to why I would use a model as complex as a LSTM. I honestly did this project to learn about the architecture of a LSTM and how to use JAX and Haiku to build it. While they are new languages for me, the documentation was thorough and has the ability to speed up large projects. Also down the line I plan to collect a dataset filled with english to braile sentences and paragraphs to train a Grade 2 Braille model, that can make actual sentences, rather than translations, using contractions, numbers, punctuation, etc. 
 
 
