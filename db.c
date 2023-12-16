@@ -834,6 +834,43 @@ Table* db_open(const char* filename) {
   return table;
 }
 
+#define MAX_QUERY_LEN 1024  // Define the maximum length for the query string
+
+/**
+ * Executes the Python script to convert natural language input to a database query.
+ * 
+ * @param user_input The natural language input from the user.
+ * @return A string containing the translated database query.
+ */
+char* get_db_query(const char* user_input) {
+    char command[MAX_QUERY_LEN];
+    sprintf(command, "python3 model_old/lora.py \"%s\"", user_input);
+    printf("Executing command: %s\n", command);  // Debug print
+
+    FILE* fp = popen(command, "r");
+    if (fp == NULL) {
+        printf("Failed to run command\n");
+        exit(1);
+    }
+
+    static char translated_query[MAX_QUERY_LEN];
+    if (fgets(translated_query, sizeof(translated_query), fp) == NULL) {
+        printf("Failed to read output\n");  // Debug print
+    }
+    printf("Script output before trimming: '%s'\n", translated_query);  // Debug print
+
+    // Trim newline character
+    char* newline = strchr(translated_query, '\n');
+    if (newline) {
+        *newline = '\0';  // Replace newline with null terminator
+    }
+
+    printf("Script output after trimming: '%s'\n", translated_query);  // Debug print
+
+    pclose(fp);
+    return translated_query;
+}
+
 /**
  * Creates a new input buffer for user input.
  * @return Pointer to the initialized InputBuffer structure.
@@ -988,9 +1025,9 @@ PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement) {
 
   // Tokenize the input to extract individual components
   char* keyword = strtok(input_buffer->buffer, " ");
-  char* id_string = strtok(NULL, " ");
-  char* username = strtok(NULL, " ");
-  char* email = strtok(NULL, " ");
+  char* username = strtok(NULL, " ");  // First input is now name
+  char* id_string = strtok(NULL, " "); // Second input is id
+  char* email = strtok(NULL, " ");     // Third input is email
 
   // Syntax validation
   if (id_string == NULL || username == NULL || email == NULL) {
@@ -1015,6 +1052,7 @@ PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement) {
   return PREPARE_SUCCESS;
 }
 
+
 /**
  * Prepares a statement based on input.
  * @param input_buffer Pointer to the InputBuffer containing the command.
@@ -1022,20 +1060,28 @@ PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement) {
  * @return Result of the preparation process.
  */
 
-PrepareResult prepare_statement(InputBuffer* input_buffer,
-                                Statement* statement) {
-  // Handle the "insert" command
-  if (strncmp(input_buffer->buffer, "insert", 6) == 0) {
-    return prepare_insert(input_buffer, statement);
-  }
-  // Handle the "select" command
-  if (strcmp(input_buffer->buffer, "select") == 0) {
-    statement->type = STATEMENT_SELECT;
-    return PREPARE_SUCCESS;
-  }
-  // If the statement type is unrecognized
-  return PREPARE_UNRECOGNIZED_STATEMENT;
+PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement) {
+    // Check if input is a natural language command
+    if (strncmp(input_buffer->buffer, "Ada ", 4) == 0) {
+        // Call Python script to get SQL query
+        char* sql_query = get_db_query(input_buffer->buffer + 4);
+        strncpy(input_buffer->buffer, sql_query, input_buffer->buffer_length - 1);
+        input_buffer->buffer[input_buffer->buffer_length - 1] = '\0'; // Ensure null termination
+    }
+
+    // Existing logic to prepare INSERT and SELECT statements
+    if (strncmp(input_buffer->buffer, "insert", 6) == 0) {
+        return prepare_insert(input_buffer, statement);
+    }
+    if (strcmp(input_buffer->buffer, "select") == 0) {
+        statement->type = STATEMENT_SELECT;
+        return PREPARE_SUCCESS;
+    }
+
+    // Handle unrecognized statements
+    return PREPARE_UNRECOGNIZED_STATEMENT;
 }
+
 
 /**
  * Gets the number of the next unused page in the pager.
@@ -1408,6 +1454,12 @@ ExecuteResult execute_insert(Statement* statement, Table* table) {
 ExecuteResult execute_select(Statement* statement, Table* table) {
   Cursor* cursor = table_start(table);
 
+  if (cursor->end_of_table) {
+    printf("DB is empty.\n");
+    free(cursor);
+    return EXECUTE_SUCCESS;
+  }
+
   Row row;
   while (!(cursor->end_of_table)) {
     deserialize_row(cursor_value(cursor), &row);
@@ -1419,6 +1471,7 @@ ExecuteResult execute_select(Statement* statement, Table* table) {
 
   return EXECUTE_SUCCESS;
 }
+
 
 /**
  * Executes a statement depending on its type (e.g., insert, select).
@@ -1441,11 +1494,12 @@ ExecuteResult execute_statement(Statement* statement, Table* table) {
  * The main function of the database application. It handles command-line arguments, 
  * initializes the database, processes input, and executes commands.
  */
-
 int main(int argc, char* argv[]) {
+  //Printing Header
+  printf("Welcome to the database\n \n \n");
   if (argc < 2) {
-    printf("Must supply a database filename.\n");
-    exit(EXIT_FAILURE);
+      printf("Must supply a database filename.\n");
+      exit(EXIT_FAILURE);
   }
 
   char* filename = argv[1];
@@ -1453,45 +1507,44 @@ int main(int argc, char* argv[]) {
 
   InputBuffer* input_buffer = new_input_buffer();
   while (true) {
-    print_prompt();
-    read_input(input_buffer);
+      print_prompt();
+      read_input(input_buffer);
 
-    if (input_buffer->buffer[0] == '.') {
-      switch (do_meta_command(input_buffer, table)) {
-        case (META_COMMAND_SUCCESS):
-          continue;
-        case (META_COMMAND_UNRECOGNIZED_COMMAND):
-          printf("Unrecognized command '%s'\n", input_buffer->buffer);
-          continue;
+      if (input_buffer->buffer[0] == '.') {
+          switch (do_meta_command(input_buffer, table)) {
+              case META_COMMAND_SUCCESS:
+                  continue;
+              case META_COMMAND_UNRECOGNIZED_COMMAND:
+                  printf("Unrecognized command '%s'\n", input_buffer->buffer);
+                  continue;
+          }
       }
-    }
 
-    Statement statement;
-    switch (prepare_statement(input_buffer, &statement)) {
-      case (PREPARE_SUCCESS):
-        break;
-      case (PREPARE_NEGATIVE_ID):
-        printf("ID must be positive.\n");
-        continue;
-      case (PREPARE_STRING_TOO_LONG):
-        printf("String is too long.\n");
-        continue;
-      case (PREPARE_SYNTAX_ERROR):
-        printf("Syntax error. Could not parse statement.\n");
-        continue;
-      case (PREPARE_UNRECOGNIZED_STATEMENT):
-        printf("Unrecognized keyword at start of '%s'.\n",
-               input_buffer->buffer);
-        continue;
-    }
+      Statement statement;
+      switch (prepare_statement(input_buffer, &statement)) {
+          case PREPARE_SUCCESS:
+              break;
+          case PREPARE_NEGATIVE_ID:
+              printf("ID must be positive.\n");
+              continue;
+          case PREPARE_STRING_TOO_LONG:
+              printf("String is too long.\n");
+              continue;
+          case PREPARE_SYNTAX_ERROR:
+              printf("Syntax error. Could not parse statement.\n");
+              continue;
+          case PREPARE_UNRECOGNIZED_STATEMENT:
+              printf("Unrecognized keyword at start of '%s'.\n", input_buffer->buffer);
+              continue;
+      }
 
-    switch (execute_statement(&statement, table)) {
-      case (EXECUTE_SUCCESS):
-        printf("Executed.\n");
-        break;
-      case (EXECUTE_DUPLICATE_KEY):
-        printf("Error: Duplicate key.\n");
-        break;
-    }
+      switch (execute_statement(&statement, table)) {
+          case EXECUTE_SUCCESS:
+              // printf("Executed.\n");
+              break;
+          case EXECUTE_DUPLICATE_KEY:
+              printf("Error: Duplicate key.\n");
+              break;
+      }
   }
 }

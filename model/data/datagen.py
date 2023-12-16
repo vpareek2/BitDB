@@ -15,14 +15,13 @@ def generate_random_data(num_rows, file_name):
             user_question = f"Insert {name} with id {id} with the email {email}"
             assistant_answer = f"insert {name} {id} {email}"
 
-            data = {
-                "messages": [
-                    {"role": "system", "content": "You are a database query chatbot meant to go from natural language to queries."},
-                    {"role": "user", "content": user_question},
-                    {"role": "assistant", "content": assistant_answer}
-                ]
-            }
+            formatted_text = f"Q: {user_question} \nA: {assistant_answer}"
+            data = {"text": formatted_text}
+
             json_line = json.dumps(data)
             file.write(json_line + '\n')
 
-generate_random_data(60, 'data.jsonl')
+# Generate data for each file
+generate_random_data(500, 'train1.jsonl')
+generate_random_data(50, 'valid1.jsonl')
+generate_random_data(50, 'test1.jsonl')

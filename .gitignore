@@ -1,1 +1,4 @@
-llama/mlx_llama_7B.npz
+model_old
+model/mistral-7B-v0.1
+model/mlx-weights
+model/mistral-7B-v0.1.tar
