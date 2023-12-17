@@ -1,8 +1,8 @@
 # BitDB           
 
-<img src="assets/images/sqlite.png" width="200" align="left"> <img src="assets/images/bitdb_logo.png" width="200" align="center"> <img src="assets/images/mistal.png" width="200" align="right">
+<img src="assets/images/sqlite.png" width="350" align="left"> <img src="assets/images/bitdb_logo.png" width="250" align="center"> <img src="assets/images/mistral.png" width="350" align="right">
 
-<br><br><br><br><br><br><br><br><br><br>BitDB is a lightweight skeleton database, very similar to SQLite. Stemming from my interest in learning more about both databases and memory operations in C, I created this project by watching Computer Architecture lectures and following cstack's database tutorial. After, I used ruby for testing different database scenarios and edge cases. Then, being a native mac user myself, I used Apple ML Research's brand new MLX library to implement a Mistral-7B model finetuned with lora to be a natural language to code generation assistant, named Ada. I took heavy inspiration from the llama example from the mlx repository, and adjusted the code to use mistral. (As of Dec 16 a mistral lora example has been added to the repo.) I wrote this setup guide for Mac because of the MLX usage in this project.
+BitDB is a lightweight skeleton database, very similar to SQLite. Stemming from my interest in learning more about both databases and memory operations in C, I created this project by watching Computer Architecture lectures and following cstack's database tutorial. After, I used ruby for testing different database scenarios and edge cases. Then, being a native mac user myself, I used Apple ML Research's brand new MLX library to implement a Mistral-7B model finetuned with lora to be a natural language to code generation assistant, named Ada. I took heavy inspiration from the llama example from the mlx repository, and adjusted the code to use mistral. (As of Dec 16 a mistral lora example has been added to the repo.) I wrote this setup guide for Mac because of the MLX usage in this project.
 
 ## Contents
 
@@ -15,7 +15,7 @@
 * [References](#References)
 
 ## Demo
-![](other/Demo.gif)
+![Demo](assets/video/bitdb_demo.mp4)
 
 ## Setup
 
