@@ -11,7 +11,7 @@ BitDB is a lightweight skeleton database, very similar to SQLite. Stemming from 
 * [Run](#Run)
 * [Syntax](#Syntax)
 * [Examples](#Examples)
-* [Version History](#Version History)
+* [Version](#Version)
 * [References](#References)
 
 ## Demo
@@ -80,7 +80,7 @@ Here is an example of the insert and select statements:<br>
 <br><br><br>Here is an example of the Ada assistant functionality:<br><br>
 <img src="assets/images/ada-example.png" width="200" align="left"><br><br>
 
-## Version History
+## Version
 
 * 0.2
    * Added Language Model Capability
