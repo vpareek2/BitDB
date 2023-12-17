@@ -75,10 +75,10 @@ which will print out all the constant variables.
 
 ## Examples
 
-Here is an example of the insert and select statements:<br>
-<img src="assets/images/insert-example.png" width="400" align="left">
-<br><br><br>Here is an example of the Ada assistant functionality:<br><br>
-<img src="assets/images/ada-example.png" width="400" align="left"><br><br>
+Here is an example of the insert and select statements:<br><br>
+<img src="assets/images/insert-example.png" width="400" align="left"><br>
+<br><br><br><br>Here is an example of the Ada assistant functionality:<br><br>
+<img src="assets/images/ada-example.png" width="600" align="left"><br><br><br><br><br><br>
 
 ## Version
 
