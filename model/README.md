@@ -4,8 +4,8 @@ This is the instruction guide to setup the model which powers Ada in this projec
 
 This model is fine-tuned and inferenced using [MLX](https://github.com/ml-explore/mlx), Apple ML Research's new machine learning library built for native computation on apple products. This part of the project is inspired from an example they provided fine-tuning LLaMa.
 
-<img src="../assets/mistral.png" width="400" align="right">
-<img src="../assets/mlx.png" width="400" align="left">  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<img src="../assets/images/mistral.png" width="495" align="right">
+<img src="../assets/images/mlx.png" width="450" align="left">  <br><br><br><br><br><br><br><br><br><br><br>
 
 ## Contents
 
