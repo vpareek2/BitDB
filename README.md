@@ -76,9 +76,9 @@ which will print out all the constant variables.
 ## Examples
 
 Here is an example of the insert and select statements:<br>
-<img src="assets/images/insert-example.png" width="200" align="left">
+<img src="assets/images/insert-example.png" width="400" align="left">
 <br><br><br>Here is an example of the Ada assistant functionality:<br><br>
-<img src="assets/images/ada-example.png" width="200" align="left"><br><br>
+<img src="assets/images/ada-example.png" width="400" align="left"><br><br>
 
 ## Version
 
