@@ -75,10 +75,10 @@ which will print out all the constant variables.
 
 ## Examples
 
-Here is an example of the insert and select statements:
+Here is an example of the insert and select statements:<br>
 <img src="assets/images/insert-example.png" width="200" align="left">
-Here is an example of the Ada assistant functionality:
-<img src="assets/images/ada-example.png" width="200" align="left">
+<br><br><br>Here is an example of the Ada assistant functionality:<br><br>
+<img src="assets/images/ada-example.png" width="200" align="left"><br><br>
 
 ## Version History
 
@@ -89,7 +89,7 @@ Here is an example of the Ada assistant functionality:
 
 * 0.1
     * Initial Release
-    * Finished database functionality
+    * Finished database functionality<br>
 
 - [ ] Add in Update and Delete Functionality
 - [X] Finish LLM assistant
