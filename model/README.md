@@ -1,6 +1,10 @@
 # Model Setup
 
+<img src="../assets/mistral.png" width="300" align="right">
+
 This is the instruction guide to setup the model which powers Ada in this project. It is powered by the [Mistral-7B model](https://mistral.ai/news/announcing-mistral-7b/) that is finetuned for this specialized task using Low-rank adaptation (LoRA. If you follow all the steps you should be able to replicate the results.
+
+<img src="../assets/mlx.png" width="300" align="left">
 
 This model is fine-tuned and inferenced using [MLX](https://github.com/ml-explore/mlx), Apple ML Research's new machine learning library built for native computation on apple products. This part of the project is inspired from an example they provided fine-tuning LLaMa.
 
@@ -11,10 +15,6 @@ This model is fine-tuned and inferenced using [MLX](https://github.com/ml-explor
   * [Fine-tune](#Fine-tune)
   * [Evaluate](#Evaluate)
   * [Generate](#Generate)
-* [Results](#Results)
-* [Custom Data](#Custom-Data)
-* [Memory Issues](#Memory-Issues)
-
 
 ## Setup 
 
